@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
                 .allowedOrigins(
                         "http://localhost:4200",                     // dev
-                        "https://final-pizzas-fronts.onrender.com"  // front en Render (ajusta al dominio real)
+                        "https://final-pizzas-front.onrender.com"  // front en Render (ajusta al dominio real)
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*");
