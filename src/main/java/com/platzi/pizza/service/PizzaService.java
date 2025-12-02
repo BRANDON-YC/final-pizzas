@@ -17,11 +17,13 @@ import java.util.List;
 
 @Service
 public class PizzaService {
+
     private final PizzaRepository pizzaRepository;
     private final PizzaPagSortRepository pizzaPagSortRepository;
 
     @Autowired
-    public PizzaService(PizzaRepository pizzaRepository, PizzaPagSortRepository pizzaPagSortRepository) {
+    public PizzaService(PizzaRepository pizzaRepository,
+                        PizzaPagSortRepository pizzaPagSortRepository) {
         this.pizzaRepository = pizzaRepository;
         this.pizzaPagSortRepository = pizzaPagSortRepository;
     }
@@ -41,19 +43,24 @@ public class PizzaService {
     }
 
     public PizzaEntity getByName(String name) {
-        return this.pizzaRepository.findFirstByAvailableTrueAndNameIgnoreCase(name).orElseThrow(() -> new RuntimeException("La pizza no existe"));
+        return this.pizzaRepository
+                .findFirstByAvailableTrueAndNameIgnoreCase(name)
+                .orElseThrow(() -> new RuntimeException("La pizza no existe"));
     }
 
     public List<PizzaEntity> getWith(String ingredient) {
-        return this.pizzaRepository.findAllByAvailableTrueAndDescriptionContainingIgnoreCase(ingredient);
+        return this.pizzaRepository
+                .findAllByAvailableTrueAndDescriptionContainingIgnoreCase(ingredient);
     }
 
     public List<PizzaEntity> getWithout(String ingredient) {
-        return this.pizzaRepository.findAllByAvailableTrueAndDescriptionNotContainingIgnoreCase(ingredient);
+        return this.pizzaRepository
+                .findAllByAvailableTrueAndDescriptionNotContainingIgnoreCase(ingredient);
     }
 
     public List<PizzaEntity> getCheapest(double price) {
-        return this.pizzaRepository.findTop3ByAvailableTrueAndPriceLessThanEqualOrderByPriceAsc(price);
+        return this.pizzaRepository
+                .findTop3ByAvailableTrueAndPriceLessThanEqualOrderByPriceAsc(price);
     }
 
     public PizzaEntity get(int idPizza) {
@@ -64,17 +71,17 @@ public class PizzaService {
         return this.pizzaRepository.save(pizza);
     }
 
+    // SOFT DELETE: sólo marca available = false
     @Transactional
-public boolean delete(int idPizza) {
-    return this.pizzaRepository.findById(idPizza)
-            .map(pizza -> {
-                // 🔴 en lugar de borrar, la marcamos como NO disponible
-                pizza.setAvailable(false);
-                this.pizzaRepository.save(pizza);
-                return true;
-            })
-            .orElse(false);
-}
+    public boolean delete(int idPizza) {
+        return this.pizzaRepository.findById(idPizza)
+                .map(pizza -> {
+                    pizza.setAvailable(false);
+                    this.pizzaRepository.save(pizza);
+                    return true;
+                })
+                .orElse(false);
+    }
 
     @Transactional(noRollbackFor = EmailApiException.class)
     public void updatePrice(UpdatePizzaPriceDto dto) {
