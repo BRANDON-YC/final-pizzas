@@ -1,6 +1,5 @@
 package com.platzi.pizza.web.controller;
 
-import com.platzi.pizza.persitence.entity.OrderEntity;
 import com.platzi.pizza.persitence.entity.PizzaEntity;
 import com.platzi.pizza.service.PizzaService;
 import com.platzi.pizza.service.dto.UpdatePizzaPriceDto;
@@ -15,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pizzas")
 public class PizzaController {
+
     private final PizzaService pizzaService;
 
     @Autowired
@@ -66,7 +66,6 @@ public class PizzaController {
         if (pizza.getIdPizza() == null || !this.pizzaService.exists(pizza.getIdPizza())) {
             return ResponseEntity.ok(this.pizzaService.save(pizza));
         }
-
         return ResponseEntity.badRequest().build();
     }
 
@@ -75,7 +74,6 @@ public class PizzaController {
         if (pizza.getIdPizza() != null && this.pizzaService.exists(pizza.getIdPizza())) {
             return ResponseEntity.ok(this.pizzaService.save(pizza));
         }
-
         return ResponseEntity.badRequest().build();
     }
 
@@ -85,20 +83,19 @@ public class PizzaController {
             this.pizzaService.updatePrice(dto);
             return ResponseEntity.ok().build();
         }
-
         return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{idPizza}")
-public ResponseEntity<Void> delete(@PathVariable int idPizza) {
-    boolean deleted = this.pizzaService.delete(idPizza);
+    public ResponseEntity<Void> delete(@PathVariable int idPizza) {
+        boolean deleted = this.pizzaService.delete(idPizza);
 
-    if (deleted) {
-        // 204 No Content si se "eliminó" (desactivó)
-        return ResponseEntity.noContent().build();
-    } else {
-        // 404 si no existía
-        return ResponseEntity.notFound().build();
+        if (deleted) {
+            // 204 No Content si se "eliminó" (desactivó)
+            return ResponseEntity.noContent().build();
+        } else {
+            // 404 si no existía
+            return ResponseEntity.notFound().build();
+        }
     }
 }
-
