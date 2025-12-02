@@ -64,9 +64,17 @@ public class PizzaService {
         return this.pizzaRepository.save(pizza);
     }
 
-    public void delete(int idPizza) {
-        this.pizzaRepository.deleteById(idPizza);
-    }
+    @Transactional
+public boolean delete(int idPizza) {
+    return this.pizzaRepository.findById(idPizza)
+            .map(pizza -> {
+                // 🔴 en lugar de borrar, la marcamos como NO disponible
+                pizza.setAvailable(false);
+                this.pizzaRepository.save(pizza);
+                return true;
+            })
+            .orElse(false);
+}
 
     @Transactional(noRollbackFor = EmailApiException.class)
     public void updatePrice(UpdatePizzaPriceDto dto) {
