@@ -90,12 +90,15 @@ public class PizzaController {
     }
 
     @DeleteMapping("/{idPizza}")
-    public ResponseEntity<Void> delete(@PathVariable int idPizza) {
-        if (this.pizzaService.exists(idPizza)) {
-            this.pizzaService.delete(idPizza);
-            return ResponseEntity.ok().build();
-        }
+public ResponseEntity<Void> delete(@PathVariable int idPizza) {
+    boolean deleted = this.pizzaService.delete(idPizza);
 
-        return ResponseEntity.badRequest().build();
+    if (deleted) {
+        // 204 No Content si se "eliminó" (desactivó)
+        return ResponseEntity.noContent().build();
+    } else {
+        // 404 si no existía
+        return ResponseEntity.notFound().build();
     }
 }
+
